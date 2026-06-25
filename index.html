@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>🐾 Gerador Tuxedo · Senha Segura</title>
+  <!-- Font & ícones -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1e1a1f 0%, #2b252b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      padding: 1.5rem;
+    }
+
+    .card {
+      max-width: 600px;
+      width: 100%;
+      background: #f4f0f0;
+      background-image: radial-gradient(circle at 20% 25%, #ffffff 0%, #ece6e6 100%);
+      border-radius: 3.5rem 3.5rem 2.5rem 2.5rem;
+      box-shadow: 0 25px 40px -10px rgba(0,0,0,0.7), 0 0 0 2px #3d2e2e inset, 0 0 0 4px #b7a7a7 inset;
+      padding: 2rem 2rem 2.5rem;
+      transition: 0.2s;
+      position: relative;
+      border: 1px solid #6b5a5a;
+    }
+
+    /* --- Tuxedo cat vibes --- */
+    .cat-ears {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: -26px;
+      left: 20px;
+      right: 20px;
+      pointer-events: none;
+    }
+    .ear {
+      width: 0;
+      height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-bottom: 40px solid #1f1a1a;
+      filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3));
+      transform: rotate(-6deg);
+    }
+    .ear.right {
+      transform: rotate(6deg) scaleX(-1);
+    }
+    .ear-inner {
+      position: relative;
+      top: 8px;
+      left: -12px;
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-bottom: 28px solid #f7d9c4;
+      opacity: 0.7;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.8rem;
+      margin-top: 0.2rem;
+      position: relative;
+      z-index: 2;
+    }
+    .title i {
+      font-size: 2.6rem;
+      color: #1f1a1a;
+      background: #f7e5d4;
+      padding: 0.4rem 0.6rem 0.2rem 0.6rem;
+      border-radius: 60px;
+      box-shadow: 0 4px 0 #3d2e2e;
+      transform: rotate(-4deg);
+    }
+    .title h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #1f1818;
+      text-shadow: 2px 2px 0 #d4c0b0;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 0.2rem 1rem 0.2rem 0.8rem;
+      border-radius: 60px;
+      backdrop-filter: blur(1px);
+      border: 1px solid #ac9494;
+    }
+    .title small {
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #2b2121;
+      color: #f0dede;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      margin-left: auto;
+      letter-spacing: 0.3px;
+      border: 1px solid #847070;
+    }
+
+    /* password field */
+    .password-area {
+      background: #1f1818;
+      border-radius: 4rem;
+      padding: 0.4rem 0.4rem 0.4rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 0 #3d2e2e, 0 10px 20px rgba(0,0,0,0.3);
+      border: 1px solid #b19797;
+      margin-bottom: 1.8rem;
+      transition: 0.1s;
+    }
+    .password-area:focus-within {
+      box-shadow: 0 6px 0 #3d2e2e, 0 0 0 3px #e2c4a0;
+    }
+    #passwordDisplay {
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 600;
+      font-family: 'Inter', monospace;
+      color: #f5ecec;
+      letter-spacing: 2px;
+      width: 100%;
+      padding: 0.8rem 0;
+      outline: none;
+      text-shadow: 0 0 6px #bda0a0;
+    }
+    #passwordDisplay::placeholder {
+      color: #7a6a6a;
+      font-weight: 400;
+      letter-spacing: 0px;
+      text-shadow: none;
+    }
+    .password-actions {
+      display: flex;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+    .password-actions button {
+      background: #3f3030;
+      border: none;
+      color: #f0e0e0;
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 40px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: 0.1s ease;
+      box-shadow: 0 4px 0 #1f1414;
+      border: 1px solid #846e6e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .password-actions button:hover {
+      background: #5a4343;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #1f1414;
+    }
+    .password-actions button:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #1f1414;
+    }
+
+    /* opções */
+    .options {
+      background: #e3d5d0;
+      padding: 1.5rem 1.8rem;
+      border-radius: 3rem;
+      margin-bottom: 2rem;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.1), 0 6px 0 #5c4747;
+      border: 1px solid #b39b9b;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem 1.8rem;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: #1e1515;
+      background: rgba(255, 240, 235, 0.6);
+      padding: 0.3rem 1.2rem 0.3rem 0.8rem;
+      border-radius: 40px;
+      backdrop-filter: blur(1px);
+      border: 1px solid #c6adad;
+      font-size: 0.95rem;
+    }
+    .options input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #3d2929;
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+    .length-control {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255, 240, 235, 0.6);
+      padding: 0.2rem 1rem 0.2rem 1.5rem;
+      border-radius: 40px;
+      border: 1px solid #c6adad;
+    }
+    .length-control span {
+      font-weight: 700;
+      font-size: 1.3rem;
+      min-width: 2.2rem;
+      text-align: center;
+      color: #1f1414;
+    }
+    #lengthSlider {
+      width: 140px;
+      height: 6px;
+      border-radius: 10px;
+      background: #b39b9b;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #lengthSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2d1f1f;
+      border: 2px solid #f7e5d4;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      cursor: pointer;
+    }
+
+    .strength {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 0.2rem 0 0.8rem 0;
+      padding: 0.2rem 0.5rem;
+    }
+    .strength-bar {
+      flex: 1;
+      height: 10px;
+      background: #b9a5a5;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    #strengthFill {
+      height: 100%;
+      width: 0%;
+      background: #b33f3f;
+      border-radius: 40px;
+      transition: width 0.2s, background 0.2s;
+    }
+    #strengthLabel {
+      font-weight: 700;
+      font-size: 1rem;
+      min-width: 80px;
+      color: #1f1414;
+      background: #f0e0d6;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      text-align: center;
+      border: 1px solid #a58282;
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: #292020;
+      border: none;
+      border-radius: 60px;
+      padding: 1rem 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f7ede7;
+      box-shadow: 0 8px 0 #181010, 0 6px 12px rgba(0,0,0,0.3);
+      border-bottom: 2px solid #6e5656;
+      cursor: pointer;
+      transition: 0.08s linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+      letter-spacing: 1px;
+    }
+    .generate-btn i {
+      font-size: 1.8rem;
+      color: #f7d9c4;
+    }
+    .generate-btn:hover {
+      background: #3b2d2d;
+      transform: scale(0.98);
+      box-shadow: 0 5px 0 #181010;
+    }
+    .generate-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #181010;
+    }
+
+    .footer-note {
+      margin-top: 1.8rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      color: #352a2a;
+      font-weight: 500;
+      font-size: 0.8rem;
+      border-top: 2px dashed #ad9292;
+      padding-top: 1.5rem;
+    }
+    .footer-note i {
+      margin-right: 0.3rem;
+      color: #4d3535;
+    }
+
+    /* responsivo */
+    @media (max-width: 500px) {
+      .card { padding: 1.5rem 1.2rem; }
+      .title h1 { font-size: 1.5rem; }
+      .options { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+      .length-control { justify-content: space-between; }
+      #lengthSlider { width: 100%; }
+      #passwordDisplay { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- orelhas de gato tuxedo -->
+  <div class="cat-ears">
+    <div class="ear"><div class="ear-inner"></div></div>
+    <div class="ear right"><div class="ear-inner"></div></div>
+  </div>
+
+  <!-- título -->
+  <div class="title">
+    <i class="fas fa-cat"></i>
+    <h1>Tuxedo <span style="font-weight: 400; font-size: 1.4rem;">·</span> vault</h1>
+    <small><i class="fas fa-shield-alt" style="margin-right: 4px;"></i> seguro</small>
+  </div>
+
+  <!-- campo senha -->
+  <div class="password-area">
+    <input type="text" id="passwordDisplay" placeholder="••••••••••" readonly>
+    <div class="password-actions">
+      <button id="copyBtn" aria-label="copiar senha"><i class="fas fa-copy"></i></button>
+      <button id="refreshBtn" aria-label="gerar nova"><i class="fas fa-rotate-right"></i></button>
+    </div>
+  </div>
+
+  <!-- opções -->
+  <div class="options">
+    <label><i class="fas fa-font"></i> Maiúsculas <input type="checkbox" id="uppercase" checked></label>
+    <label><i class="fas fa-sort-alpha-down"></i> Minúsculas <input type="checkbox" id="lowercase" checked></label>
+    <label><i class="fas fa-hashtag"></i> Números <input type="checkbox" id="numbers" checked></label>
+    <label><i class="fas fa-asterisk"></i> Símbolos <input type="checkbox" id="symbols" checked></label>
+
+    <div class="length-control">
+      <i class="fas fa-arrow-left" style="font-size: 0.9rem; opacity: 0.7;"></i>
+      <span id="lengthValue">16</span>
+      <i class="fas fa-arrow-right" style="font-size: 0.9rem; opacity: 0.7;"></i>
+      <input type="range" id="lengthSlider" min="6" max="40" value="16">
+    </div>
+  </div>
+
+  <!-- medidor de força -->
+  <div class="strength">
+    <span style="font-weight: 600; color: #1f1414;"><i class="fas fa-shield"></i></span>
+    <div class="strength-bar"><div id="strengthFill" style="width: 60%; background: #d9a441;"></div></div>
+    <span id="strengthLabel">Forte</span>
+  </div>
+
+  <!-- botão gerar -->
+  <button class="generate-btn" id="generateBtn">
+    <i class="fas fa-paw"></i> Gerar nova senha
+  </button>
+
+  <!-- rodapé com boas práticas -->
+  <div class="footer-note">
+    <span><i class="fas fa-check-circle"></i> 256+ bits</span>
+    <span><i class="fas fa-lock"></i> criptografia local</span>
+    <span><i class="fas fa-database"></i> sem rastreio</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // DOM
+    const passwordDisplay = document.getElementById('passwordDisplay');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const lengthSlider = document.getElementById('lengthSlider');
+    const lengthValue = document.getElementById('lengthValue');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthLabel = document.getElementById('strengthLabel');
+
+    const uppercaseCheck = document.getElementById('uppercase');
+    const lowercaseCheck = document.getElementById('lowercase');
+    const numbersCheck = document.getElementById('numbers');
+    const symbolsCheck = document.getElementById('symbols');
+
+    // conjuntos de caracteres
+    const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+    const NUMBERS = '0123456789';
+    const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    // --- gerador de senha com entropia e padrões seguros ---
+    function generatePassword() {
+      const length = parseInt(lengthSlider.value, 10);
+      let chars = '';
+      if (uppercaseCheck.checked) chars += UPPER;
+      if (lowercaseCheck.checked) chars += LOWER;
+      if (numbersCheck.checked) chars += NUMBERS;
+      if (symbolsCheck.checked) chars += SYMBOLS;
+
+      // fallback: se nada marcado, usar minúsculas
+      if (chars.length === 0) {
+        chars = LOWER;
+        lowercaseCheck.checked = true;
+      }
+
+      // critério de segurança: garantir pelo menos 1 de cada tipo marcado
+      let password = '';
+      const selectedTypes = [];
+      if (uppercaseCheck.checked) selectedTypes.push(UPPER);
+      if (lowercaseCheck.checked) selectedTypes.push(LOWER);
+      if (numbersCheck.checked) selectedTypes.push(NUMBERS);
+      if (symbolsCheck.checked) selectedTypes.push(SYMBOLS);
+
+      // garantir inclusão de cada tipo (selecionado)
+      let guaranteed = '';
+      for (let type of selectedTypes) {
+        const randomIndex = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * type.length);
+        guaranteed += type[randomIndex];
+      }
+
+      // preencher o restante com caracteres aleatórios do conjunto total
+      const remainingLength = length - guaranteed.length;
+      let randomPart = '';
+      for (let i = 0; i < remainingLength; i++) {
+        const randomIndex = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * chars.length);
+        randomPart += chars[randomIndex];
+      }
+
+      // combinar e embaralhar (crypto seguro)
+      const combined = guaranteed + randomPart;
+      const arr = combined.split('');
+      // Fisher-Yates com crypto
+      for (let i = arr.length - 1; i > 0; i--) {
+        const rand = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * (i + 1));
+        [arr[i], arr[rand]] = [arr[rand], arr[i]];
+      }
+      password = arr.join('');
+
+      // se o comprimento for maior que o solicitado (por causa do guaranteed) cortamos
+      if (password.length > length) {
+        password = password.slice(0, length);
+      } else if (password.length < length) {
+        // caso raro, completar com caracteres aleatórios
+        while (password.length < length) {
+          const idx = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * chars.length);
+          password += chars[idx];
+        }
+      }
+      return password;
+    }
+
+    // --- medidor de força baseado em entropia ---
+    function updateStrength(password) {
+      const len = password.length;
+      const hasUpper = /[A-Z]/.test(password);
+      const hasLower = /[a-z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSymbol = /[^A-Za-z0-9]/.test(password);
+      let count = 0;
+      if (hasUpper) count++;
+      if (hasLower) count++;
+      if (hasNumber) count++;
+      if (hasSymbol) count++;
+
+      // entropia aproximada (bits)
+      let entropy = 0;
+      if (count === 1) entropy = len * 4.7;    // só letras minúsculas
+      else if (count === 2) entropy = len * 6.2; // + maiúsculas
+      else if (count === 3) entropy = len * 7.5; // + números
+      else if (count === 4) entropy = len * 8.8; // + símbolos
+
+      let percent = Math.min(100, (entropy / 128) * 100); // 128 bits considerado forte
+      let label = 'Muito fraca';
+      let color = '#b33f3f';
+      if (percent >= 80) { label = 'Muito forte'; color = '#2b7a4b'; }
+      else if (percent >= 60) { label = 'Forte'; color = '#d9a441'; }
+      else if (percent >= 40) { label = 'Média'; color = '#d97a3a'; }
+      else if (percent >= 20) { label = 'Fraca'; color = '#b34f3f'; }
+      else { label = 'Muito fraca'; color = '#b33f3f'; }
+
+      strengthFill.style.width = Math.min(100, percent) + '%';
+      strengthFill.style.background = color;
+      strengthLabel.textContent = label;
+    }
+
+    // --- atualizar interface ---
+    function updatePassword() {
+      const newPass = generatePassword();
+      passwordDisplay.value = newPass;
+      updateStrength(newPass);
+    }
+
+    // --- eventos ---
+    generateBtn.addEventListener('click', updatePassword);
+    refreshBtn.addEventListener('click', updatePassword);
+
+    copyBtn.addEventListener('click', async function() {
+      const text = passwordDisplay.value;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        // feedback rápido
+        const original = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check" style="color: #a3d6a3;"></i>';
+        setTimeout(() => { copyBtn.innerHTML = original; }, 1800);
+      } catch {
+        // fallback
+        passwordDisplay.select();
+        document.execCommand('copy');
+        const original = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check" style="color: #a3d6a3;"></i>';
+        setTimeout(() => { copyBtn.innerHTML = original; }, 1800);
+      }
+    });
+
+    // atualizar comprimento
+    lengthSlider.addEventListener('input', function() {
+      lengthValue.textContent = this.value;
+      updatePassword();
+    });
+
+    // checkboxes
+    [uppercaseCheck, lowercaseCheck, numbersCheck, symbolsCheck].forEach(el => {
+      el.addEventListener('change', updatePassword);
+    });
+
+    // inicia com senha
+    updatePassword();
+
+    // toque no campo de senha mostra dica (acessibilidade)
+    passwordDisplay.addEventListener('focus', function() { this.select(); });
+
+  })();
+</script>
+</body>
+</html>
